@@ -1,12 +1,25 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="stylesheet" href="./styles/style.css">
   <title>Mysites</title>
 </head>
+
 <body>
+  <h2>MySites</h2>
+  <div class="container" id="projects"></div>
+
+  <h3>Добавить проект</h3>
+  <input type="text" id="name" placeholder="Название">
+  <input type="text" id="link" placeholder="Ссылка на сайт">
+  <input type="text" id="task" placeholder="Ссылка на задание">
+  <textarea id="todo" placeholder="Что сделать"></textarea>
+  <button onclick="addProject()">Добавить</button>
+
   <script src="./scripts/script.js"></script>
 </body>
+
 </html>
