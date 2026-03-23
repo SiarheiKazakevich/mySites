@@ -11,7 +11,7 @@ function renderProjects() {
 
   projects.forEach((proj, index) => {
     const card = document.createElement('div');
-    card.className = 'card';
+    card.className = 'card' + (proj.done ? 'done' : '');
 
 
     card.innerHTML = `
@@ -21,16 +21,26 @@ function renderProjects() {
         <div><a href="${proj.task}" target="_blank">Задание</a></div>
         <div>${proj.todo}</div>
       </div>
-      <div class="row hidden">
-        <div>Доп. строка 1</div>
-        <div>Доп. строка 2</div>
-        <div>Доп. строка 3</div>
-        <div>Доп. строка 4</div>
+      <div class="actions">
+      <label>
+        <input type="checkbox" ${proj.done ? 'checked' : ''} onclick="toggleDone(${index})"> Сделано
+      </label>
+       <button onclick="editProject(${index})">Редактировать</button>
+       <button onclick="deleteProject(${index})">Удалить</button>
+      </div>
+      <div class="row hidden" id="edit-${index}">
+       <input value="${proj.name}" id="name-${index}">
+       <input value="${proj.link}" id="link-${index}">
+       <input value="${proj.task}" id="task-${index}">
+       <textarea id="todo-${index}">${proj.todo}</textarea>
+       <button onclick="saveEdit(${index})">Сохранить</button>
       </div>
     `;
 
-    card.addEventListener('click', () => {
-      card.classList.toggle('active');
+    card.addEventListener('click', (e) => {
+      if (e.target.tagName !== 'BUTTON' && e.target.tagName !== 'INPUT') {
+        card.classList.toggle('active');
+      }
     });
 
     container.appendChild(card);
@@ -44,7 +54,7 @@ function addProject() {
   const task = document.getElementById('task').value;
   const todo = document.getElementById('todo').value;
 
-  const newProject = { name, link, task, todo };
+  const newProject = { name, link, task, todo, done: false };
 
   projects.push(newProject);
   saveProjects();
@@ -55,6 +65,35 @@ function addProject() {
   document.getElementById('task').value = '';
   document.getElementById('todo').value = '';
 
+}
+
+function toggleDone(index) {
+  projects[index].done = !projects[index].done;
+  saveProjects();
+  renderProjects();
+}
+
+function editProject(index) {
+  const el = document.getElementById(`edit-${index}`);
+  el.classList.toggle('hidden');
+}
+
+function saveEdit(index) {
+  projects[index] = {
+    ...projects[index],
+    name: document.getElementById(`name-${index}`).value,
+    link: document.getElementById(`link-${index}`).value,
+    task: document.getElementById(`task-${index}`).value,
+    todo: document.getElementById(`todo-${index}`).value
+  };
+  saveProjects();
+  renderProjects();
+}
+
+function deleteProject(index) {
+  projects.splice(index, 1);
+  saveProjects();
+  renderProjects();
 }
 
 renderProjects();
