@@ -42,10 +42,12 @@ body {
   max-height: 500px;
   opacity: 1;
   margin-top: 10px;
+  display: grid;
 }
 
 input,
-textarea {
+textarea,
+select {
   width: 100%;
   padding: 8px;
   border-radius: 6px;
@@ -72,4 +74,11 @@ button:hover {
   display: flex;
   gap: 10px;
   align-items: center;
+}
+
+.filters {
+  margin-bottom: 20px;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 10px;
 }

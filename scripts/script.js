@@ -9,12 +9,29 @@ function saveProjects() {
 function renderProjects() {
   container.innerHTML = '';
 
-  projects.forEach((proj, index) => {
-    const card = document.createElement('div');
-    card.className = 'card' + (proj.done ? 'done' : '');
+  const search = document.getElementById('search').value.toLowerCase();
+  const status = document.getElementById('statusFilter').value;
+
+  projects.filter(p => {
+    const matchesSearch =
+      p.name.toLowerCase().includes(search) ||
+      p.todo.toLowerCase().includes(search);
+
+    const matchesStatus =
+      status === 'all' ||
+      (status === 'done' && p.done) ||
+      (status === 'active' && !p.done);
+
+    return matchesSearch && matchesStatus;
+  })
+    .forEach((proj, index) => {
+      const realIndex = projects.indexOf(proj);
+
+      const card = document.createElement('div');
+      card.className = 'card' + (proj.done ? 'done' : '');
 
 
-    card.innerHTML = `
+      card.innerHTML = `
       <div class="row">
         <div><b>${proj.name}</b></div>
         <div><a href="${proj.link}" target="_blank">Сайт</a></div>
@@ -23,29 +40,29 @@ function renderProjects() {
       </div>
       <div class="actions">
       <label>
-        <input type="checkbox" ${proj.done ? 'checked' : ''} onclick="toggleDone(${index})"> Сделано
+        <input type="checkbox" ${proj.done ? 'checked' : ''} onclick="toggleDone(${realIndex})"> Сделано
       </label>
-       <button onclick="editProject(${index})">Редактировать</button>
-       <button onclick="deleteProject(${index})">Удалить</button>
+       <button onclick="editProject(${realIndex})">Редактировать</button>
+       <button onclick="deleteProject(${realIndex})">Удалить</button>
       </div>
-      <div class="row hidden" id="edit-${index}">
-       <input value="${proj.name}" id="name-${index}">
-       <input value="${proj.link}" id="link-${index}">
-       <input value="${proj.task}" id="task-${index}">
-       <textarea id="todo-${index}">${proj.todo}</textarea>
-       <button onclick="saveEdit(${index})">Сохранить</button>
+      <div class="row hidden" id="edit-${realIndex}">
+       <input value="${proj.name}" id="name-${realIndex}">
+       <input value="${proj.link}" id="link-${realIndex}">
+       <input value="${proj.task}" id="task-${realIndex}">
+       <textarea id="todo-${realIndex}">${proj.todo}</textarea>
+       <button onclick="saveEdit(${realIndex})">Сохранить</button>
       </div>
     `;
 
-    card.addEventListener('click', (e) => {
-      if (e.target.tagName !== 'BUTTON' && e.target.tagName !== 'INPUT') {
-        card.classList.toggle('active');
-      }
+      card.addEventListener('click', (e) => {
+        if (e.target.tagName !== 'BUTTON' && e.target.tagName !== 'INPUT') {
+          card.classList.toggle('active');
+        }
+      });
+
+      container.appendChild(card);
+
     });
-
-    container.appendChild(card);
-
-  });
 }
 
 function addProject() {
@@ -75,7 +92,7 @@ function toggleDone(index) {
 
 function editProject(index) {
   const el = document.getElementById(`edit-${index}`);
-  el.classList.toggle('hidden');
+  if (el) el.classList.toggle('hidden');
 }
 
 function saveEdit(index) {
