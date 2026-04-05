@@ -19,7 +19,9 @@ body {
   overflow: hidden;
   transition: all 0.3s ease;
 }
-
+.card.dragging{
+  opacity: 0.6;
+}
 .card.done {
   opacity: 0.6;
   text-decoration: line-through;

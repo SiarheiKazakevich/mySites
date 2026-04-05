@@ -1,6 +1,7 @@
 const container = document.getElementById('projects');
 
 let projects = JSON.parse(localStorage.getItem('projects')) || [];
+let dragIndex = null;
 
 function saveProjects() {
   localStorage.setItem('projects', JSON.stringify(projects));
@@ -14,8 +15,8 @@ function renderProjects() {
 
   projects.filter(p => {
     const matchesSearch =
-      p.name.toLowerCase().includes(search) ||
-      p.todo.toLowerCase().includes(search);
+      (p.name || '').toLowerCase().includes(search) ||
+      (p.todo || '').toLowerCase().includes(search);
 
     const matchesStatus =
       status === 'all' ||
@@ -28,7 +29,8 @@ function renderProjects() {
       const realIndex = projects.indexOf(proj);
 
       const card = document.createElement('div');
-      card.className = 'card' + (proj.done ? 'done' : '');
+      card.className = 'card ' + (proj.done ? 'done' : '');
+      card.draggable = true;
 
 
       card.innerHTML = `
@@ -53,6 +55,37 @@ function renderProjects() {
        <button onclick="saveEdit(${realIndex})">Сохранить</button>
       </div>
     `;
+
+      // add dragDrop
+      card.addEventListener('dragstart', () => {
+        dragIndex = realIndex;
+        card.classList.add('dragging');
+      });
+
+      card.addEventListener('dragend', () => {
+        card.classList.remove('dragging');
+      });
+
+      card.addEventListener('dragover', (e) => {
+        e.preventDefault();
+      });
+
+      card.addEventListener('drop', () => {
+        if (dragIndex === null || dragIndex === index) return;
+
+        const draggedItem = projects[dragIndex];
+        projects.splice(dragIndex, 1);
+        projects.splice(realIndex, 0, draggedItem);
+
+        saveProjects();
+        renderProjects();
+
+      });
+
+
+
+
+
 
       card.addEventListener('click', (e) => {
         if (e.target.tagName !== 'BUTTON' && e.target.tagName !== 'INPUT') {
