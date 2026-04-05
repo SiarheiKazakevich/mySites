@@ -1,6 +1,17 @@
 const container = document.getElementById('projects');
 
-let projects = JSON.parse(localStorage.getItem('projects')) || [];
+//let projects = JSON.parse(localStorage.getItem('projects')) || [];
+let projects = [];
+
+async function loadProjects() {
+  const res = await fetch('projects.json');
+  projects = await res.json();
+  renderProjects();
+
+}
+
+
+
 let dragIndex = null;
 
 function saveProjects() {
@@ -146,4 +157,5 @@ function deleteProject(index) {
   renderProjects();
 }
 
-renderProjects();
+//renderProjects();
+loadProjects();
