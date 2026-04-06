@@ -1,1 +1,9 @@
-[]
+[
+  {
+    "name": "Тестовый проект",
+    "link": "https://example.com",
+    "task": "https://task.com",
+    "todo": "Проверка загрузки",
+    "done": false
+  }
+]
